@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="report_invoice_document_inherit" inherit_id="account.report_invoice_document">
+			<xpath expr="//table[@class='table table-condensed table-bordered table-striped']" position="after">
+            <p>
+                <strong>Amount in Words:</strong>                
+                <span t-esc="o.amount_to_text(o.amount_total, 'Rupees')"/> 
+            </p>
+            </xpath>
+        </template>
+    </data>
+</openerp>

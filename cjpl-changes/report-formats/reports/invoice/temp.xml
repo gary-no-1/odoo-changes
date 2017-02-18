@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<td>
+	<span t-field="l.name"/>
+	<t t-if="l.product_id">
+		<t t-if="l.product_id.type == 'product'">
+			<t t-if="l.product_id.virtual_available &lt; l.product_uom_qty">
+								hello
+					</t>
+		
+		</t>
+	</t>
+
+	<t t-if="l.address_allotment_id">
+		<small>
+			<div t-field="l.address_allotment_id" t-field-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: 
+                [&quot;address&quot;, &quot;name&quot;, &quot;website&quot;], &quot;no_marker&quot;: true}"/>
+		</small>
+	</t>
+</td>

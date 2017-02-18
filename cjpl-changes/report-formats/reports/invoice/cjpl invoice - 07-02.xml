@@ -1,0 +1,370 @@
+<?xml version="1.0"?>
+<t t-name="account.report_invoice_mc_document">
+	<t t-foreach="['Original', 'Triplicate', 'Duplicate' ]" t-as="z">
+		<div class="header">
+			<div class="row">
+				<div class="col-xs-2">
+					<img t-if="o.company_id.logo" t-att-src="'data:image/png;base64,%s' % o.company_id.logo" style="max-height: 60px;"/>
+				</div>
+				<div class="col-xs-5">
+					<small>
+						<div t-field="o.company_id.partner_id.name" />
+						<div t-field="o.journal_id.x_bill_from.partner_id" t-field-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: 
+				[&quot;address&quot;, &quot;website&quot;], &quot;no_marker&quot;: true}"/>
+					</small>
+				</div>
+				<div class="col-xs-5">
+					<div class="row">
+						<div class="col-xs-12 text-right">
+							<strong>
+								<t t-esc="z"/>
+							</strong>
+						</div>
+					</div>
+					<div t-if="not o.journal_id.x_tax_invoice" >
+						<h4>
+							<span t-if="o.type == 'out_invoice' and (o.state == 'open' or o.state == 'paid')">Retail Invoice</span>
+							<span t-if="o.type == 'out_invoice' and o.state == 'proforma2'">PRO-FORMA</span>
+							<span t-if="o.type == 'out_invoice' and o.state == 'draft'">Draft Retail Invoice</span>
+							<span t-if="o.type == 'out_invoice' and o.state == 'cancel'">Cancelled Retail Invoice</span>
+							<span t-if="o.type == 'out_refund'">Credit Note</span>
+							<span t-if="o.type == 'in_refund'">Supplier Refund</span>
+							<span t-if="o.type == 'in_invoice'">Supplier Invoice</span>
+							<span t-field="o.number"/>
+						</h4>
+					</div>
+					<div t-if="o.journal_id.x_tax_invoice" >
+						<h4>
+							<span t-if="o.type == 'out_invoice' and (o.state == 'open' or o.state == 'paid')">Tax  Invoice</span>
+							<span t-if="o.type == 'out_invoice' and o.state == 'proforma2'">PRO-FORMA</span>
+							<span t-if="o.type == 'out_invoice' and o.state == 'draft'">Draft Tax  Invoice</span>
+							<span t-if="o.type == 'out_invoice' and o.state == 'cancel'">Cancelled Tax Invoice</span>
+							<span t-if="o.type == 'out_refund'">Credit Note</span>
+							<span t-if="o.type == 'in_refund'">Supplier Refund</span>
+							<span t-if="o.type == 'in_invoice'">Supplier Invoice</span>
+							<span t-field="o.number"/>
+						</h4>
+					</div>
+					<div class="row">
+						<div class="col-xs-3 text-right">
+							<span >
+								<strong>Date:</strong>
+							</span>
+						</div>				
+						<div class="col-xs-6">
+							<strong>
+								<span t-field="o.date_invoice" t-field-options='{"format": "MMMM d, yyyy"}'/>
+							</strong>
+						</div>				
+					</div>
+				</div>
+			</div>
+			<hr/>
+		</div>
+
+		<div class="page">
+			<div class="row  mt4 mb4">
+				<div class="col-xs-5 col-xs-offset-1">
+					<address t-field="o.partner_id" t-field-options="{&quot;widget&quot;: &quot;contact&quot;, 
+				&quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: true}"/>
+					<div t-if="o.journal_id.x_tax_invoice" >
+						<span t-if="o.partner_id.x_tin">TIN: <span t-field="o.partner_id.x_tin"/>
+						</span>
+					</div>
+				</div>
+				<div class="col-xs-5 ">
+					<div>
+						<t t-if="o.x_kind_attn">Kind Attn: <span t-field="o.x_kind_attn"> </span>
+						</t>
+						<t t-if="not o.x_kind_attn">
+							<span t-if="o.contract_id and o.contract_id.x_kind_attn">Kind Attn: <span t-field="o.contract_id.x_kind_attn"> </span>
+							</span>
+						</t>
+						<t t-if="not o.x_kind_attn">
+							<span t-if="not o.contract_id and o.partner_id.ref">Kind Attn: <span t-field="o.partner_id.ref"> </span>
+							</span>
+						</t>
+					</div>
+					<div>
+						<t t-if="o.x_po_ref">Reference: <span t-field="o.x_po_ref"/>
+						</t>
+						<t t-if="not o.x_po_ref">
+							<span t-if="o.reference">Reference: <span t-field="o.reference"/>
+							</span>
+						</t>
+						<t t-if="not o.x_po_ref">
+							<span t-if="not o.reference and (o.contract_id and o.contract_id.x_po_ref)">Reference: <span t-field="o.contract_id.x_po_ref"> </span>
+							</span>
+						</t>
+					</div>
+					<div>
+						<t t-if="o.x_book_no">Book: <span t-field="o.x_book_no"/>
+						</t>
+					</div>
+					<div t-if="o.type == 'out_refund'">
+						<t t-if="o.origin">
+							<strong>Against Invoice: <span t-field="o.origin"/>
+							</strong>
+							<br />
+							<span t-field="o.name"/>
+						</t> 
+					</div>
+				</div>
+			</div>
+
+			<div class="row  mt4 mb4">
+				<div t-if="o.journal_id.x_tax_invoice" >
+					<div t-if="not o.partner_id.x_tin" style="color:red">
+						<strong>Missing TIN # for Tax Invoice</strong>
+					</div>
+				</div>
+			</div>
+
+			<div class="row  mt4 mb4" style="text-align: center">
+				<span t-if="o.x_bill_period_from">Billing for the period from:
+					<span t-field="o.x_bill_period_from" t-field-options='{"format": "MMMM d, yyyy"}'/>
+					<span> to </span>
+					<span t-field="o.x_bill_period_to" t-field-options='{"format": "MMMM d, yyyy"}'/>
+				</span>
+			</div>
+
+			<hr/>
+
+			<table class="table table-condensed table-bordered table-striped" style="page-break-after:auto" >
+				<thead style="display:table-header-group">
+					<tr>
+						<th class="col-xs-1">Sr. No.</th>
+						<th class="col-xs-4">Description</th>
+						<th class="col-xs-1">Quantity</th>
+						<th class="col-xs-1 text-right">Unit Price</th>
+						<th class="col-xs-1 text-right" groups="sale.group_discount_per_so_line">
+							<small>Discount / Prorata Factor (%)</small>
+						</th>
+						<th class="col-xs-2 text-right">Taxes</th>
+						<th class="col-xs-2 text-right">Amount</th>
+					</tr>
+				</thead>
+				<tbody class="invoice_tbody">
+					<t t-set="i" t-value="1" /> 
+					<tr style="page-break-inside:avoid; page-break-after:auto" t-foreach="o.invoice_line" t-as="l">
+						<td>
+							<span t-esc="i" />
+							<t t-set="i" t-value="i+1"/> 
+						</td>
+						<td>
+							<span t-field="l.name"/>
+						</td>
+						<td>
+							<span t-field="l.quantity"/>
+							<span t-field="l.uos_id" groups="product.group_uom"/>
+						</td>
+						<td class="text-right">
+							<span t-field="l.price_unit"/>
+						</td>
+						<td class="text-right" groups="sale.group_discount_per_so_line">
+							<span t-field="l.discount"/>
+						</td>
+						<td class="text-right">
+							<span t-esc="', '.join(map(lambda x: x.name, l.invoice_line_tax_id))"/>
+						</td>
+						<td class="text-right">
+							<span t-field="l.price_subtotal" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;o.currency_id&quot;}"/>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<div class="row">
+				<div class="col-xs-4 pull-right">
+					<table class="table table-condensed">
+						<tr class="border-black">
+							<td>
+								<strong>Total Without Taxes</strong>
+							</td>
+							<td class="text-right">
+								<span t-field="o.amount_untaxed" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;o.currency_id&quot;}"/>
+							</td>
+						</tr>
+						<tr>
+							<td>Taxes</td>
+							<td class="text-right">
+								<span t-field="o.amount_tax" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;o.currency_id&quot;}"/>
+							</td>
+						</tr>
+						<tr class="border-black">
+							<td>
+								<strong>Total</strong>
+							</td>
+							<td class="text-right">
+								<span t-field="o.amount_total" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;o.currency_id&quot;}"/>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div class="row" style="page-break-inside: avoid" t-if="o.tax_line">
+				<div class="col-xs-6">
+					<table class="table table-condensed table-bordered" style="page-break-after:auto ">
+						<thead style="display:table-header-group">
+							<tr>
+								<th>Tax</th>
+								<th class="text-right">Base</th>
+								<th class="text-right">Amount</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr style="page-break-inside:avoid; page-break-after:auto" t-foreach="o.tax_line" t-as="t">
+								<td>
+									<span t-field="t.name"/>
+								</td>
+								<td class="text-right">
+									<span t-field="t.base" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;o.currency_id&quot;}"/>
+								</td>
+								<td class="text-right">
+									<span t-field="t.amount" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;o.currency_id&quot;}"/>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<t t-if="o.comment">
+				<p>
+					<strong>Comment:</strong>
+					<span t-field="o.comment"/>
+				</p>
+			</t>
+			<t t-if="o.payment_term.note">
+				<p>
+					<strong>Payment Term:</strong>
+					<span t-field="o.payment_term.note"/>
+				</p>
+			</t>
+			<t t-if="o.fiscal_position.note">
+				<p>
+					<strong>Fiscal Position Remark:</strong>
+					<span t-field="o.fiscal_position.note"/>
+				</p>
+			</t>
+		</div>
+
+		<div class="footer">
+			<div class="row">
+				<h5>
+					<small>
+						<div class="col-xs-6">
+							<table class="table table-condensed">
+								<thead style="display:table-header-group">
+									<tr>
+										<th class="col-xs-4">Pre Authenticated by</th>
+										<th class="col-xs-4">Issued by</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<strong>Name:</strong>
+											<span t-field="o.x_checked_by.name" />
+										</td>
+										<td>
+											<strong>Name:</strong>
+											<span t-field="o.x_prepared_by.name" />
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<strong>Status:</strong>
+											<span t-field="o.x_checked_by.x_designation" />
+										</td>
+										<td>
+											<strong>Status:</strong>
+											<span t-field="o.x_prepared_by.x_designation" />
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span>Signature .....................</span>
+										</td>
+										<td>
+											<span>Signature .....................</span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</small>
+				</h5>
+			</div>
+			<div class="row">
+				<div class="col-xs-6">
+					<h6>
+						<small>
+							<ul>
+								<li>Payment to be made on receipt of bill, by cash or draft in favour of COMPUTER JUNCTION PVT. LTD.</li>
+								<li>For RTGS or NEFT, please transfer to <span t-field="o.partner_bank_id.bank_name"/>, Cash Credit A/c No. 
+									<span t-field="o.partner_bank_id.acc_number"/>, IFSC Code: <span t-field="o.partner_bank_id.bank_bic"/>
+								</li>
+								<li>Any delay in payment will attract interest @ 2% per month or part of the month</li>
+								<li>Subject to Delhi Jurisdiction only</li>
+								<li>A prorata factor (%) is used to multiply the item line total in case of partial usage during the month. For example 15 days usage in a 30 day month, prorata factor will be 50%</li>
+							</ul>
+						</small>
+					</h6>
+				</div>
+				<div class="col-xs-6">
+					<small>
+						<span>Received by:</span>
+						<br/>
+						<span>Date:</span>
+						<br/>
+						<span>Signature .....................</span>
+					</small>
+				</div>
+			</div>
+			<div class="text-center" style="border-top: 1px solid black;">
+				<h5>
+					<small>
+						<ul class="list-inline" >
+							<li t-if="o.journal_id.x_bill_from.partner_id.x_roc">&amp;bull;</li>
+							<li t-if="o.journal_id.x_bill_from.partner_id.x_roc">CIN: <span t-field="o.journal_id.x_bill_from.partner_id.x_roc"/>
+							</li>
+
+							<li t-if="o.journal_id.x_bill_from.partner_id.x_pan">&amp;bull;</li>
+							<li t-if="o.journal_id.x_bill_from.partner_id.x_pan">PAN: <span t-field="o.journal_id.x_bill_from.partner_id.x_pan"/>
+							</li>
+
+							<li t-if="o.journal_id.x_bill_from.partner_id.x_tin">&amp;bull;</li>
+							<li t-if="o.journal_id.x_bill_from.partner_id.x_tin">TIN: <span t-field="o.journal_id.x_bill_from.partner_id.x_tin"/>
+							</li>
+
+							<li t-if="o.journal_id.x_bill_from.partner_id.x_srv_tax">&amp;bull;</li>
+							<li t-if="o.journal_id.x_bill_from.partner_id.x_srv_tax">Service Tax: <span t-field="o.journal_id.x_bill_from.partner_id.x_srv_tax"/>
+							</li>
+						</ul>
+						<ul class="list-inline" >
+							<li t-if="o.journal_id.x_bill_from.partner_id.email">&amp;bull;</li>
+							<li t-if="o.journal_id.x_bill_from.partner_id.email">Email: <span t-field="o.journal_id.x_bill_from.partner_id.email"/>
+							</li>
+
+							<li t-if="o.journal_id.x_bill_from.partner_id.phone">&amp;bull;</li>
+							<li t-if="o.journal_id.x_bill_from.partner_id.phone">Phone: <span t-field="o.journal_id.x_bill_from.partner_id.phone"/>
+							</li>
+						</ul>
+
+						<ul class="list-inline">
+							<li>Page:</li>
+							<li>
+								<span class="page"/>
+							</li>
+							<li>/</li>
+							<li>
+								<span class="topage"/>
+							</li>
+						</ul>
+					</small>
+				</h5>
+			</div>
+		</div>      
+		<p style="page-break-after:always;"/>
+	</t>
+</t>

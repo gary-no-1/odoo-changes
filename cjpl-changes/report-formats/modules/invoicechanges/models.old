@@ -1,0 +1,18 @@
+# -*- coding: utf-8 -*-
+
+# from openerp.osv import fields, orm
+from openerp import models, fields, api, exceptions
+from datetime import datetime
+
+class account_invoice(models.Model):
+    _inherit = "account.invoice"
+
+@api.constrains('x_bill_period_to,x_bill_period_from')
+def _check_something(self):
+    for r in self:
+        fmt = '%Y-%m-%d'
+        d1 = datetime.strptime(r.x_bill_period_from, fmt)
+        d2 = datetime.strptime(r.x_bill_period_to, fmt)
+        if (d2-d1).days < 0:
+            raise ValidationError("From & To Dates are in error")
+    # all records passed the test, don't return anything
