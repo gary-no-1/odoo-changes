@@ -158,3 +158,32 @@ COMMENT ON VIEW vg_stock_gate_pass_invoice_status_gtr_no_gate_pass_done_invoice
 
 -- -//////////\\\\\\\\\\//////////\\\\\\\\\\//////////\\\\\\\\\\//////////\\\\\\\\\\//////////\\\\\\\\\\	
   
+  
+select
+   a.location_id,
+    b.complete_name AS wh_location,
+    a.product_id,
+    c.product_name,
+    c.product_category,
+    a.name AS stock_qty,
+    a.prodlot_id,
+    d.name as gtr_no,
+    d.x_greentek_lot as lot_no,
+    d.x_transfer_price_cost as transfer_price
+   FROM stock_product_by_location_prodlot a
+     JOIN stock_location b ON a.location_id = b.id
+     JOIN vg_product_category  c ON a.product_id = c.id
+     left join stock_production_lot d on a.prodlot_id = d.id
+  
+  
+with x as (
+ SELECT stock_move_by_location.product_id,
+    stock_move_by_location.prodlot_id,
+    sum(stock_move_by_location.name) AS qty,
+    stock_move_by_location.company_id
+   FROM stock_move_by_location
+  GROUP BY stock_move_by_location.prodlot_id, stock_move_by_location.product_id, stock_move_by_location.company_id
+ HAVING round(sum(stock_move_by_location.name), 4) <> 0::numeric)
+ select * from x where product_id = 18691 ; -- in (select product_id from vg_stock_by_product) and; -- prodlot_id is not null ;
+
+  
