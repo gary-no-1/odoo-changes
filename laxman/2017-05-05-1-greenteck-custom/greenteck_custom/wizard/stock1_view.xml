@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<openerp>
+		<data>
+		
+		<!--............................. Stock related report Form View start ......................................-->
+			
+			<record id = "stock1_form_view" model="ir.ui.view">
+	    		<field name="name">Bulk Transfer</field>
+	    		<field name="model">stock1</field>
+	    		<field name="arch" type="xml">
+	    			<form string = "Bulk Transfer" >
+	    				<header>
+	    				<button name="create_stock_move" string="Apply" state="confirm" type="object" class="oe_highlight" attrs="{'invisible':[('code','=',True)]}"/>
+						</header>
+						<sheet>
+			    				<group>
+			    					<sheet>
+			    						<group col="4" colspan="4">
+			    						<field name="picking_type_id" attrs="{'readonly':[('code','=',True)]}"/>
+			    						<field name="date" attrs="{'readonly':[('code','=',True)]}"/>
+			    						<field name="source_location" attrs="{'readonly':[('code','=',True)]}"/>
+			    						<field name="code" invisible="1"/>
+			    						</group>
+			    						<notebook>
+			    							<page string="Product">
+			    								<field name="stock1_lines" attrs="{'readonly':[('code','=',True)]}">
+			    									<tree string="Product" editable="bottom">
+			    										<field name="product_id"/>
+			    										<field name="qty"/>
+			    										<field name="uom_id"/>
+			    										<field name="dest_loc"/>
+			    									</tree>
+			    								</field>	
+			    							</page>	
+			    						</notebook>	
+			    						</sheet>
+                               </group>
+                               <!-- <button name='print_report' type='object' string='Consolidated PO/MO Report' icon="gtk-print" /> -->
+			        	</sheet>
+			        </form>
+			    </field>
+			</record>
+			
+			
+			
+<!-- ..............................Stock related Tree View Start..............................................-->			
+			
+			
+			<record id = "stock1_tree" model="ir.ui.view">
+	    		<field name="name">Bulk Transfer</field>
+	    		<field name="model">stock1</field>
+	    		<field name="arch" type="xml">
+	    			<tree string = "Consolidated PO/MO">
+	    			     <field name="date"/>
+	    			     <field name="picking_type_id"/>
+	    			     <field name="source_location"/>
+	    			     <!-- <field name="buyer"/> -->
+	    			     
+	    			</tree>
+	    		</field>
+    		</record>
+    		
+<!--................................Stock Related Pendancy Action .............................................. -->	
+	    	
+	    	<record id="action_stock1" model="ir.actions.act_window">
+	            <field name="name">Bulk Transfer</field>
+	            <field name="type">ir.actions.act_window</field>
+	            <field name="res_model">stock1</field>
+	            <field name="view_type">form</field>
+	            <field name="view_mode">tree,form</field>
+	            <field name="view_id" ref="stock1_tree"/>
+	        </record>
+    		
+		
+		<!-- .......................................  Menu  ............................... -->
+					<menuitem id="stock1_menu" name="Bulk Transfer" parent="stock.menu_traceability" action="action_stock1"/>
+            
+            
+					
+		</data>
+	</openerp>
+

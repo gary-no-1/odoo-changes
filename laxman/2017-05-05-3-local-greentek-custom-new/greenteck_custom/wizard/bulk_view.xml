@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<openerp>
+		<data>
+		
+		<!--............................. Stock related report Form View start ......................................-->
+			
+			<record id = "bulk_form_view" model="ir.ui.view">
+	    		<field name="name">Bulk Transfer</field>
+	    		<field name="model">bulk</field>
+	    		<field name="arch" type="xml">
+	    			<form string = "Bulk Transfer" >
+	    				<header>
+	    				<button name="create_stock_move" string="Apply" state="confirm" type="object" class="oe_highlight" attrs="{'invisible':[('code','=',True)]}"/>
+						</header>
+						<sheet>
+			    				<group>
+			    					<sheet>
+			    						<group col="4" colspan="4">
+			    						<field name="picking_type_id" attrs="{'readonly':[('code','=',True)]}"/>
+			    						<field name="date" attrs="{'readonly':[('code','=',True)]}"/>
+			    						<field name="source_location" attrs="{'readonly':[('code','=',True)]}"/>
+			    						<field name="code" invisible="1"/>
+			    						</group>
+			    						<notebook>
+			    							<page string="Product">
+			    								<field name="bulk_lines" attrs="{'readonly':[('code','=',True)]}">
+			    									<tree string="Product" editable="bottom">
+			    										<field name="product_id"/>
+			    										<field name="qty"/>
+			    										<field name="uom_id"/>
+			    										<field name="dest_loc"/>
+                                                        <field name="code" invisible="1"/>
+			    									</tree>
+			    								</field>	
+			    							</page>	
+			    						</notebook>	
+			    						</sheet>
+                               </group>
+                             
+			        	</sheet>
+			        </form>
+			    </field>
+			</record>
+			
+			
+			
+<!-- ..............................Stock related Tree View Start..............................................-->			
+			
+			
+			<record id = "bulk_tree" model="ir.ui.view">
+	    		<field name="name">Bulk Transfer</field>
+	    		<field name="model">bulk</field>
+	    		<field name="arch" type="xml">
+	    			<tree string = "Bulk Transfer">
+	    			     <field name="date"/>
+	    			     <field name="picking_type_id"/>
+	    			     <field name="source_location"/>
+	    			</tree>
+	    		</field>
+    		</record>
+    		
+<!--................................Stock Related Pendancy Action .............................................. -->	
+	    	
+	    	<record id="action_bulk" model="ir.actions.act_window">
+	            <field name="name">Bulk Transfer</field>
+	            <field name="type">ir.actions.act_window</field>
+	            <field name="res_model">bulk</field>
+	            <field name="view_type">form</field>
+	            <field name="view_mode">tree,form</field>
+	            <field name="view_id" ref="bulk_tree"/>
+	        </record>
+    		
+		
+		<!-- .......................................  Menu  ............................... -->
+					<menuitem id="bulk_menu" name="Bulk Transfer" parent="stock.menu_traceability" action="action_bulk"/>
+            
+            
+					
+		</data>
+	</openerp>
+
